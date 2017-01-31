@@ -8,12 +8,12 @@ import android.support.annotation.NonNull;
  *
  * @author Peter Bukhal (peter.bukhal@gmail.com)
  */
-public final class Error {
+public final class ApiError {
 
     private final int code;
     private final String message;
 
-    public Error(final int code, @NonNull final String message) {
+    public ApiError(final int code, @NonNull final String message) {
         this.code = code;
         this.message = message;
     }
@@ -38,7 +38,7 @@ public final class Error {
 
     @Override
     public String toString() {
-        return "Error{" +
+        return "ApiError{" +
                 "code=" + code +
                 ", message='" + message + '\'' +
                 '}';

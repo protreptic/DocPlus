@@ -1,7 +1,7 @@
 package ru.docplus.android.doctor.service.doctor.response;
 
-import java.util.List;
-import ru.docplus.android.doctor.service.doctor.model.Error;
+import ru.docplus.android.doctor.service.doctor.model.ApiErrors;
+
 /**
  * Сущность представляющая ответ сервера содержащий ошибки
  * в модели взаимодействия с API сервера.
@@ -9,9 +9,9 @@ import ru.docplus.android.doctor.service.doctor.model.Error;
 public final class ApiErrorResponse {
 
     private boolean success;
-    private List<Error> data;
+    private ApiErrors data;
 
-    public ApiErrorResponse(boolean success, List<Error> data) {
+    public ApiErrorResponse(final boolean success, final ApiErrors data) {
         this.success = success;
         this.data = data;
     }
@@ -30,7 +30,7 @@ public final class ApiErrorResponse {
      *
      * @return список ошибок
      */
-    public List<Error> getData() {
+    public ApiErrors getData() {
         return data;
     }
 

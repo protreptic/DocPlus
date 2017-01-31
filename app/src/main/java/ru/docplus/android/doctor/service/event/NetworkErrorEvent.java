@@ -1,18 +1,20 @@
 package ru.docplus.android.doctor.service.event;
 
+import ru.docplus.android.doctor.service.doctor.model.NetworkError;
+
 /**
  * @author Peter Bukhal (peter.bukhal@gmail.com)
  */
 public final class NetworkErrorEvent {
 
-    private Throwable throwable;
+    private NetworkError networkError;
 
-    public NetworkErrorEvent(Throwable throwable) {
-        this.throwable = throwable;
+    public NetworkErrorEvent(NetworkError throwable) {
+        this.networkError = throwable;
     }
 
-    public Throwable getThrowable() {
-        return throwable;
+    public NetworkError getNetworkError() {
+        return networkError;
     }
 
 }

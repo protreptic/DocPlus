@@ -7,34 +7,34 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.google.gson.GsonBuilder;
 import com.squareup.otto.Bus;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import ru.docplus.android.doctor.R;
-import ru.docplus.android.doctor.realm.RealmProvider;
 import ru.docplus.android.doctor.service.doctor.DoctorApi;
 import ru.docplus.android.doctor.service.doctor.DoctorApiProvider;
-import ru.docplus.android.doctor.service.doctor.model.Error;
+import ru.docplus.android.doctor.service.doctor.model.ApiError;
+import ru.docplus.android.doctor.service.doctor.model.NetworkError;
 import ru.docplus.android.doctor.service.doctor.request.AuthRequest;
 import ru.docplus.android.doctor.service.doctor.request.LoginRequest;
 import ru.docplus.android.doctor.service.doctor.request.LogoutRequest;
+import ru.docplus.android.doctor.service.doctor.response.ApiErrorResponse;
 import ru.docplus.android.doctor.service.doctor.response.AuthResponse;
 import ru.docplus.android.doctor.service.doctor.response.ConfigResponse;
 import ru.docplus.android.doctor.service.doctor.response.LoginResponse;
 import ru.docplus.android.doctor.service.doctor.response.LogoutResponse;
-import ru.docplus.android.doctor.service.event.DoctorApiErrorEvent;
 import ru.docplus.android.doctor.service.event.AppTokenUpdatedEvent;
 import ru.docplus.android.doctor.service.event.BusProvider;
 import ru.docplus.android.doctor.service.event.ConfigurationUpdatedEvent;
+import ru.docplus.android.doctor.service.event.DoctorApiErrorEvent;
 import ru.docplus.android.doctor.service.event.LoginEvent;
 import ru.docplus.android.doctor.service.event.LogoutEvent;
 import ru.docplus.android.doctor.service.event.NetworkErrorEvent;
 import ru.docplus.android.doctor.service.event.ReferenceUpdatedEvent;
 import ru.docplus.android.doctor.service.event.UpdateAvailableEvent;
-
-import static ru.docplus.android.doctor.service.doctor.DoctorApiProvider.parseApiError;
 
 /**
  * @author Peter Bukhal (peter.bukhal@gmail.com)
@@ -195,23 +195,29 @@ public final class DoctorService extends Service {
     }
 
     private void handleApiError(Response response) {
-        switch (response.code()) {
-            case 404: {
-                mBus.post(new DoctorApiErrorEvent(new Error(404, "404 Not Found")));
-            } break;
-            default: {
-                try {
-                    mBus.post(new DoctorApiErrorEvent(
-                            parseApiError(response.errorBody().string())));
-                } catch (Exception e) {
-                    mBus.post(new DoctorApiErrorEvent());
-                }
-            } break;
+        DoctorApiErrorEvent event = new DoctorApiErrorEvent();
+
+        try {
+            switch (response.code()) {
+                case 404: {
+                    event = new DoctorApiErrorEvent(new ApiError(404, "404 Not Found"));
+                } break;
+                default: {
+                    event = new DoctorApiErrorEvent(
+                            new GsonBuilder().create()
+                                    .fromJson(response.errorBody().charStream(),
+                                            ApiErrorResponse.class).getData().getErrors());
+                } break;
+            }
+        } catch (Exception e) {
+            //
+        } finally {
+            mBus.post(event);
         }
     }
 
     private void handleNetworkError(Throwable t) {
-        mBus.post(new NetworkErrorEvent(t));
+        mBus.post(new NetworkErrorEvent(new NetworkError(t)));
     }
 
     @Nullable
