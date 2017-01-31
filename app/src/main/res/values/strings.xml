@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">DOC+</string>
+
+    <string name="app_login">doctorApplication</string>
+    <string name="app_password">nXNWdiOL}zCl</string>
+    <string name="doctor_api">http://app.doctoroncall.ru/</string>
+</resources>
