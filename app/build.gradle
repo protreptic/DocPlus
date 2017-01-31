@@ -4,6 +4,7 @@ apply plugin: 'realm-android'
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
+
     defaultConfig {
         applicationId "ru.docplus.android.doctor"
         minSdkVersion 19
@@ -12,10 +13,54 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-    buildTypes {
+
+    signingConfigs {
         release {
+            storeFile file("../keystore/docplus-keystore.jks")
+            storePassword "U92n323@#\$2d2"
+            keyAlias "docplus-release-key"
+            keyPassword "HA22&*3B821d@&@(dd1e11"
+        }
+        debug {
+            storeFile file("../keystore/docplus-keystore.jks")
+            storePassword "U92n323@#\$2d2"
+            keyAlias "docplus-debug-key"
+            keyPassword "ND(y21923D@2@!0udf"
+        }
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
             minifyEnabled false
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+            signingConfig signingConfigs.debug
+        }
+
+        release {
+            debuggable false
+            minifyEnabled false
+
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    productFlavors {
+        beta {
+            applicationIdSuffix ".beta"
+            versionNameSuffix "-beta"
+        }
+
+        prod
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            output.outputFile = new File(
+                    output.outputFile.parent,
+                    "docplus-doctor-v${variant.versionName}.apk")
         }
     }
 }
