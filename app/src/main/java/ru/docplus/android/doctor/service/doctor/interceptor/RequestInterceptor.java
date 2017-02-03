@@ -1,14 +1,13 @@
 package ru.docplus.android.doctor.service.doctor.interceptor;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
 import java.io.IOException;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
+import ru.docplus.android.doctor.service.DoctorService;
 
 /**
  * Created by
@@ -52,7 +51,7 @@ public final class RequestInterceptor implements Interceptor {
         return chain.proceed(
                 chain.request()
                         .newBuilder()
-                        .addHeader("token", "-")
+                        .addHeader("token", DoctorService.sAppToken)
                         .addHeader("X-DOC-VERSION-NAME", versionName)
                         .addHeader("X-DOC-VERSION-CODE", versionCode)
                         .build());

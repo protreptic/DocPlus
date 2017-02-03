@@ -3,6 +3,8 @@ package ru.docplus.android.doctor.service.doctor;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.google.gson.GsonBuilder;
+
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -25,7 +27,9 @@ public final class DoctorApiProvider {
                             .addInterceptor(new RequestInterceptor(context))
                             .addInterceptor(new LoggingInterceptor())
                             .build())
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(
+                            GsonConverterFactory.create(
+                                    new GsonBuilder().create()))
                     .build()
                     .create(DoctorApi.class);
         }
